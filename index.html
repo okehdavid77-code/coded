@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AUREX | Quiet Confidence</title>
+  <style>
+    :root {
+      --bg-dark: #0a0a0a;
+      --card-bg: #141414;
+      --accent-red: #d91e2a;
+      --text-light: #ffffff;
+      --text-muted: #999999;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+
+    /* Navigation Bar */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 5%;
+      border-bottom: 1px solid #222;
+      position: sticky;
+      top: 0;
+      background: rgba(10, 10, 10, 0.95);
+      z-index: 100;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 3px;
+    }
+
+    .brand-logo img {
+      height: 45px;
+      width: auto;
+    }
+
+    .cart-btn {
+      background: transparent;
+      color: var(--text-light);
+      border: 1px solid var(--text-light);
+      padding: 8px 18px;
+      cursor: pointer;
+      font-weight: bold;
+      letter-spacing: 1px;
+      transition: 0.2s;
+    }
+
+    .cart-btn:hover {
+      background: var(--accent-red);
+      border-color: var(--accent-red);
+    }
+
+    /* Hero Banner */
+    .hero {
+      text-align: center;
+      padding: 60px 20px 40px;
+      border-bottom: 1px solid #1f1f1f;
+    }
+
+    .hero img {
+      max-width: 240px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: 36px;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+    }
+
+    .hero p {
+      color: var(--accent-red);
+      font-weight: bold;
+      letter-spacing: 4px;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    /* Product Showcase */
+    .product-section {
+      max-width: 1100px;
+      margin: 60px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      align-items: center;
+    }
+
+    .gallery {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .gallery img.main-img {
+      width: 100%;
+      max-height: 420px;
+      object-fit: contain;
+    }
+
+    .thumb-row {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .thumb-row button {
+      background: #f2f2f2;
+      border: 2px solid transparent;
+      padding: 6px 14px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #111;
+      border-radius: 4px;
+    }
+
+    .thumb-row button.active {
+      border-color: var(--accent-red);
+    }
+
+    .product-details h2 {
+      font-size: 28px;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+
+    .price {
+      font-size: 22px;
+      color: var(--accent-red);
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .description {
+      color: var(--text-muted);
+      margin-bottom: 25px;
+      font-size: 15px;
+    }
+
+    /* Size Selector */
+    .size-label {
+      font-size: 13px;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      display: block;
+      color: #ccc;
+    }
+
+    .sizes {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    .size-btn {
+      width: 45px;
+      height: 45px;
+      background: var(--card-bg);
+      border: 1px solid #333;
+      color: var(--text-light);
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .size-btn.selected {
+      background: var(--text-light);
+      color: var(--bg-dark);
+      border-color: var(--text-light);
+    }
+
+    .add-to-cart {
+      width: 100%;
+      padding: 16px;
+      background: var(--accent-red);
+      color: white;
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: 0.2s;
+    }
+
+    .add-to-cart:hover {
+      background: #b0151f;
+      transform: translateY(-3px);
+      text-shadow: 0 5px 12px rgba(207, 53, 53, 0.879);
+}
+ 
+    
+    
+
+    /* Cart Drawer */
+    .cart-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 340px;
+      height: 100%;
+      background: #141414;
+      border-left: 1px solid #333;
+      padding: 25px;
+      z-index: 200;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #333;
+      padding-bottom: 15px;
+    }
+
+    .close-cart {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .cart-items {
+      flex-grow: 1;
+      margin-top: 20px;
+      overflow-y: auto;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #222;
+      padding: 12px 0;
+      font-size: 14px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      border-top: 1px solid #1f1f1f;
+      color: var(--text-muted);
+      font-size: 13px;
+      letter-spacing: 2px;
+    }
+
+    @media (max-width: 768px) {
+      .product-section {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="brand-logo">
+      <img src="WhatsApp Image 2026-10-18 at 08.41.26.jpeg" alt="AUREX Logo">
+      <span>AUREX</span>
+    </div>
+    <button class="cart-btn" onclick="toggleCart()">CART (<span id="cart-count">0</span>)</button>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <img src="WhatsApp Image 2026-10-18 at 08.41.26.jpeg" alt="AUREX Emblem">
+    <h1>DROP 001</h1>
+    <p>QUIET CONFIDENCE</p>
+  </section>
+
+  <!-- Main Product Showcase -->
+  <section class="product-section">
+    <div class="gallery">
+      <img id="display-img" class="main-img" src="image.png" alt="AUREX Long Sleeve Front">
+      <div class="thumb-row">
+        <button id="btn-front" class="active" onclick="switchView('front')">FRONT VIEW</button>
+       
+      </div>
+      <div class="gallery">
+        <img id="display-img" class="main-img" src="WhatsApp Image 2026-10-19 at 19.15.46.jpeg" alt="Aurex long Sleeve Front">
+         <button id="btn-back" onclick="switchView('back')">BACK VIEW (00)</button>
+      </div>
+    </div>
+
+    <div class="product-details">
+      <h2>AUREX "00" LONG SLEEVE JERSEY</h2>
+      <div class="price" id="product-price">₦25,000</div>
+      <p class="description">
+        Heavyweight boxy-fit white long sleeve featuring distressed red AUREX chest and sleeve graphics, red contrast shoulder piping, and red-camo "00" back print. Finished with our signature "QUIET CONFIDENCE" hem stamp.
+      </p>
+
+      <span class="size-label">SELECT SIZE:</span>
+      <div class="sizes">
+        <button class="size-btn" onclick="selectSize(this, 'S')">S</button>
+        <button class="size-btn" onclick="selectSize(this, 'M')">M</button>
+        <button class="size-btn selected" onclick="selectSize(this, 'L')">L</button>
+        <button class="size-btn" onclick="selectSize(this, 'XL')">XL</button>
+      </div>
+
+      <button class="add-to-cart" onclick="addToCart()">ADD TO CART</button>
+    </div>
+  </section>
+
+  <!-- Slide-out Cart -->
+  <div class="cart-modal" id="cart-modal">
+    <div>
+      <div class="cart-header">
+        <h3>YOUR BAG</h3>
+        <button class="close-cart" onclick="toggleCart()">×</button>
+      </div>
+      <div class="cart-items" id="cart-items">
+        <p style="color: #777;">Your cart is empty.</p>
+      </div>
+    </div>
+    <div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight:bold;">
+        <span>TOTAL:</span>
+        <span id="cart-total">₦0</span>
+      </div>
+      <button class="add-to-cart" onclick="checkoutWhatsApp()">ORDER VIA WHATSAPP</button>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2026 AUREX APPAREL — QUIET CONFIDENCE. ALL RIGHTS RESERVED.
+  </footer>
+
+  <script>
+    let selectedSize = 'L';
+    let cart = [];
+    const itemPrice = 45000;
+
+    function switchView(view) {
+      const img = document.getElementById('display-img');
+      const btnFront = document.getElementById('btn-front');
+      const btnBack = document.getElementById('btn-back');
+
+      if (view === 'front') { 
+        img.src = 'image.png';
+        btnFront.classList.add('active');
+        btnBack.classList.remove('active');
+      } else {
+        img.src = 'image.png';
+        btnBack.classList.add('active');
+        btnFront.classList.remove('active');
+      }
+    }
+
+    function selectSize(btn, size) {
+      document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedSize = size;
+    }
+
+    function addToCart() {
+      cart.push({ name: 'AUREX "00" Long Sleeve', size: selectedSize, price: itemPrice });
+      updateCartUI();
+      toggleCart(true);
+    }
+
+    function updateCartUI() {
+      document.getElementById('cart-count').innerText = cart.length;
+      const itemsContainer = document.getElementById('cart-items');
+      const totalEl = document.getElementById('cart-total');
+
+      if (cart.length === 0) {
+        itemsContainer.innerHTML = '<p style="color: #777;">Your cart is empty.</p>';
+        totalEl.innerText = '₦0';
+        return;
+      }
+
+      let html = '';
+      let total = 0;
+      cart.forEach((item, index) => {
+        total += item.price;
+        html += `
+          <div class="cart-item">
+            <div>
+              <strong>${item.name}</strong><br>
+              <span style="color:#999;">Size: ${item.size}</span>
+            </div>
+            <div>
+              ₦${item.price.toLocaleString()}
+              <button onclick="removeItem(${index})" style="background:none;border:none;color:#d91e2a;cursor:pointer;margin-left:8px;">✕</button>
+            </div>
+          </div>
+        `;
+      });
+
+      itemsContainer.innerHTML = html;
+      totalEl.innerText = '₦' + total.toLocaleString();
+    }
+
+    function removeItem(index) {}
+
+
+
+
+
